@@ -3,6 +3,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from "../utils";
+import React, { useState } from "react";
 
 const user = {
   name: 'Tom Cook',
@@ -12,20 +13,35 @@ const user = {
 }
 const navigation = [
   { name: 'Contacts', href: '/', current: true },
-  { name: 'Busted', href: '/boop', current: false },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ]
+const arr = [
+    "bg-gray-800",
+    "bg-red-800",
+    "bg-lime-800",
+    "bg-cyan-800",
+    "bg-purple-800",
+    "bg-emerald-800"
+]
+
+
+
 
 export default function Root() {
+    const [boop, setBoop] = useState(arr[0]);
+    function Boop() {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    setBoop(arr[randomIndex]);
+}
     return <>
 
     <div className="min-h-full">
-        <div className="bg-gray-800 pb-32">
-          <Disclosure as="nav" className="bg-gray-800">
+        <div className={boop+" pb-32"}>
+          <Disclosure as="nav" className={boop}>
             {({ open }) => (
               <>
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -56,6 +72,7 @@ export default function Root() {
                                 {item.name}
                               </NavLink>
                             ))}
+                            <button className='text-gray-300 hover:bg-gray-700 hover:text-white' onClick={Boop}>Busted</button>
                           </div>
                         </div>
                       </div>
