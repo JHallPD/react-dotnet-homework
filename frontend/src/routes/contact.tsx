@@ -1,6 +1,8 @@
 import { Form, useLoaderData } from "react-router-dom";
 import { ContactType } from "../types";
 
+// something is wrong here where on load all the forms are being triggered. 
+
 export default function Contact() {
     const { contact } = useLoaderData() as { contact: ContactType };
 
@@ -61,10 +63,9 @@ export default function Contact() {
           <Form action="edit">
             <button type="submit">Edit</button>
           </Form>
-          <Form
-            method="post"
-            action="destroy"
-            onSubmit={(event) => {
+        </div>
+        <div className="flex space-x-2 rounded-md bg-cyan-100 p-2 m mt-2">
+          <button type="submit" onClick={(event) => {
               if (
                 !confirm(
                   "Please confirm you want to delete this record."
@@ -72,10 +73,8 @@ export default function Contact() {
               ) {
                 event.preventDefault();
               }
-            }}
-          >
-            <button type="submit">Delete</button>
-          </Form>
+                action(contact.id);
+            }}>Delete</button>
         </div>
       </div>
     </div>
@@ -89,4 +88,20 @@ export async function loader({ params }: { params: { contactId: string } }) {
 
     return { contact };
 
+}
+
+interface ActionParams {
+  contactId: string;
+}
+
+//  the form was prefiring without any user input so it has been removed for a traditional button onClick
+export async function action( contactId: string ) {
+  await fetch(`/api/contacts/${contactId}/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  window.location.href = `/`;
+  
 }
