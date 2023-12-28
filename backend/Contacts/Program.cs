@@ -11,16 +11,22 @@ var app = builder.Build();
 
 app.Urls.Add("http://localhost:5000");
 
+// health check
 app.MapGet("/", () => "OK");
 
+// get all contacts
 app.MapGet("/contacts/", (ContactContext context) =>
 {
     return context.Contacts.ToList();
 });
+
+// get a contact
 app.MapGet("/contacts/{id}", (ContactContext context, int id) =>
 {
     return context.Contacts.FirstOrDefault(c => c.Id == id);
 });
+
+// create a contact
 app.MapPost("/contacts/", async (ContactContext context, HttpContext httpContext) =>
 {
     var requestBody = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
@@ -28,7 +34,20 @@ app.MapPost("/contacts/", async (ContactContext context, HttpContext httpContext
     var contact = JsonSerializer.Deserialize<Contact>(requestBody, options);
     context.Contacts.Add(contact);
     await context.SaveChangesAsync();
-    return Results.Ok("Contact added successfully.");
+    return Results.Created("Contact created successfully", contact);
+});
+
+// deleted a contact
+app.MapPost("/contacts/{id}/delete", async (ContactContext context, HttpContext httpContext, int id) =>
+{
+    var contactToDelete = context.Contacts.FirstOrDefault(c => c.Id == id);
+    context.Contacts.Remove(contactToDelete);
+    if (contactToDelete != null)
+    {
+        await context.SaveChangesAsync();
+        return Results.Ok("Contact deleted successfully");
+    }
+    return Results.NotFound("Contact not found.");
 });
 
 // Update a contact

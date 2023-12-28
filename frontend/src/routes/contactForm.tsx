@@ -1,8 +1,10 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import { ContactType } from "../types";
 
-export default function EditContact() {
-  const { contact } = useLoaderData() as { contact: ContactType };
+
+// this is about 99% what is needed for creation so I adjusted the params to be optional and fixed the action to work for both creation and editing
+export default function ContactForm() {
+  const { contact } = useLoaderData()?useLoaderData() as { contact: ContactType }:[];
 
   return (
     <Form method="post" id="contact-form">
@@ -22,7 +24,7 @@ export default function EditContact() {
                 id="name"
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 placeholder="Name"
-                defaultValue={contact.name}
+                defaultValue={contact?.name}
               />
             </div>
           </div>
@@ -43,7 +45,7 @@ export default function EditContact() {
               autoComplete="email"
               placeholder="email@example.com"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              defaultValue={contact.email}
+              defaultValue={contact?.email}
             />
           </div>
         </div>
@@ -63,7 +65,7 @@ export default function EditContact() {
               autoComplete="tel"
               placeholder="(123) 456-7890"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              defaultValue={contact.phone}
+              defaultValue={contact?.phone}
             />
           </div>
         </div>
@@ -86,7 +88,7 @@ export default function EditContact() {
                 id="twitter"
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 placeholder="janesmith"
-                defaultValue={contact.twitter}
+                defaultValue={contact?.twitter}
               />
             </div>
           </div>
@@ -107,7 +109,7 @@ export default function EditContact() {
                 id="avatar"
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 placeholder="/avatar.jpg"
-                defaultValue={contact.avatar}
+                defaultValue={contact?.avatar}
               />
             </div>
           </div>
@@ -126,7 +128,7 @@ export default function EditContact() {
               name="notes"
               rows={3}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              defaultValue={contact.notes}
+              defaultValue={contact?.notes}
             />
           </div>
           <p className="mt-3 text-sm leading-6 text-gray-600">
@@ -167,15 +169,26 @@ export async function action({
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
 
-  // post the json to the api /contacts/:contactId
+  // post the json to the api /contacts/ or /contacts/:contactId
   console.log("updates = ", updates);
-  await fetch(`/api/contacts/${params.contactId}`, {
+  await fetch(params?.contactId !== undefined?`/api/contacts/${params.contactId}`:`/api/contacts/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(updates),
+  }).then(function(response) {
+    // node finishes here
+    return response.json();
+  }).then(function(data) {
+    // dotnet need this
+    console.log(data);  
+    const redirectId = params.contactId? params.contactId: data.id;
+    window.location.href = `/contacts/${redirectId}`;
   });
-
-  return redirect(`/contacts/${params.contactId}`);
+  // if I dont put this here it briefly errors out. 
+  // If I move the redirect it does not error but requires me to make an id var to pass out of the .then and so I did this instead
+  return null
+  
 }
+
