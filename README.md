@@ -23,6 +23,15 @@ To start development, follow these steps:
 6. Start the development server by running `npm run dev` in the root directory.
 7. Run tests using `npm run test` in the frontend directory and `dotnet test` in the backend directory.
 
+## Testing
+	
+Testing this app can be done using `npm run integrated-test`. 
+This will run all the cypress e2e crud tests to ensure everything is working properly for the users
+
+Comparing Cypress to Playwrite it was decided cypress would be more appropriate to use. Playwrite has a higher learning curve and is newer so there is less to use with it compared to cypress.
+
+Cypress was selected for its easy of use and experimental features that allow for direct replication of user input on the app for a better test.
+These simple crud tests need to be updated to reflect any changes in the appliation. This also allows for visualization of the actions.
 
 ## Homework
 
