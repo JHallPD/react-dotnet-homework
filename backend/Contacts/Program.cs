@@ -32,6 +32,10 @@ app.MapPost("/contacts/", async (ContactContext context, HttpContext httpContext
     var requestBody = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     var contact = JsonSerializer.Deserialize<Contact>(requestBody, options);
+    // get current time for createdAt & updatedAt contact params.
+    DateTime now = DateTime.UtcNow;
+    contact.CreatedAt = now;
+    contact.UpdatedAt = now;
     context.Contacts.Add(contact);
     await context.SaveChangesAsync();
     return Results.Created("Contact created successfully", contact);
@@ -59,13 +63,14 @@ app.MapPost("/contacts/{id}", async (ContactContext context, HttpContext httpCon
     var contactToUpdate = context.Contacts.FirstOrDefault(c => c.Id == id);
     if (contactToUpdate != null)
     {
+        DateTime now = DateTime.UtcNow;
         contactToUpdate.Name = contact.Name;
         contactToUpdate.Email = contact.Email;
         contactToUpdate.Phone = contact.Phone;
         contactToUpdate.Avatar = contact.Avatar;
         contactToUpdate.Twitter = contact.Twitter;
         contactToUpdate.Notes = contact.Notes;
-
+        contactToUpdate.UpdatedAt = now;
         await context.SaveChangesAsync();
         return Results.Ok("Contact updated successfully.");
     }
