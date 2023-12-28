@@ -1,5 +1,7 @@
 # Welcome
 
+![Homepage Image](/images/homepage.PNG)
+
 This is a simple application to manage your contacts. It's built using React, ASP.NET Core and SQL Server.
 
 CLHbid.com will be using this application in our technical screening process. We'll ask you to make some changes to the
@@ -14,11 +16,13 @@ If you have any issues, don't hesitate to email Mark for help!
 To start development, follow these steps:
 
 1. Clone the repository.
-2. Open the repository in a Codespace on GitHub, or setup a local environment with dotnet v8, SQL Server 2022, and node v20.
+2. Open the repository in a Codespace on GitHub, or setup a local environment with dotnet v8, SQL Server 2022, and node v20 (requires more detail for local).
 3. Install the required dependencies by running `npm install` in the root directory and in `frontend`.
-4. Run database migrations by running `npm run db:migrate` in the root directory.
-5. Start the development server by running `npm run dev` in the root directory.
-6. Run tests using `npm run test` in the frontend directory and `dotnet test` in the backend directory.
+4. LOCAL - In the .devcontainer folder run `docker compose up` then with your sql manager of choice create the "ApplicationDB" database in the newly created sql container - temp fix to get coding
+5. Run database migrations by running `npm run db:migrate` in the root directory.
+6. Start the development server by running `npm run dev` in the root directory.
+7. Run tests using `npm run test` in the frontend directory and `dotnet test` in the backend directory.
+
 
 ## Homework
 
@@ -104,7 +108,7 @@ Learn more about the SQL Server container [here](https://learn.microsoft.com/en-
 ## Trouble Shooting
 
 ### If you're unable to access the database
-Make sure that you can connect to the database on the command line. If you can't try re-building your container using the VS Code command, "Codespaces: Rebuild Container".
+Make sure that you can connect to the database on the command line. If you can't try re-building your container using the VS Code command, "Codespaces: Rebuild Container". local dev alternative?
 
 If the database is available it's possible the migrations didn't run properly from the `postCreateCommand` in the `devcontainer.json` file. You can run the migrations manually by running the following commands:
 
@@ -114,3 +118,10 @@ dotnet ef database update
 ```
 
 Happy coding!
+
+
+# Notes
+
+
+Requires more setup for local - works great on github codespaces
+Container files can include frontend. 

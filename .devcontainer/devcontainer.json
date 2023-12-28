@@ -19,7 +19,7 @@
 				"mssql.connections": [
 					{
 						"server": "localhost,1433",
-						"database": "",
+						"database": "ApplicationDB",
 						"authenticationType": "SqlLogin",
 						"user": "sa",
 						"password": "P@ssw0rd",
